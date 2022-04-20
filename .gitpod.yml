@@ -1,5 +1,5 @@
 tasks:
-  - command: node server.js
+  - command: gp await-port 23000 && node server.js
 
 ports:
   - port: 1337

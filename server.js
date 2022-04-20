@@ -7,6 +7,18 @@ const db = JSON.parse(fs.readFileSync("./db.json", "utf-8"));
 const jobs = {};
 let resolve;
 
+const randomHex = (size) => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+const gitpodBuild = async (id, repoUrl, serverUrl) => {
+    await exec(`gp preview https://gitpod.io/#BUILD_ID=${id},SERVER_URL=${encodeURIComponent(serverUrl)}/${repoUrl} --external`);
+};
+const localBuild = async (id, repoUrl, serverUrl) => {
+    console.log(`Please run this locally:
+    git clone ${repoUrl} /tmp/${id} &&
+    cd /tmp/${id} &&
+    BUILD_ID=${id} SERVER_URL=${serverUrl} ./gitpod-benchmark.sh &&
+    rm -rf /tmp/${id}`);
+}
+
 http.Server(async (req, res) => {
     const [path, query] = req.url.split("?");
     const params = Object.fromEntries(query ? query.split("&").map(q => q.split("=")) : []);
@@ -37,21 +49,15 @@ http.Server(async (req, res) => {
     res.end("Bad Request\n");
 
 }).listen(1337, async () => {
-    const url = (await exec("gp url 1337")).stdout.trim();
+    const serverUrl = (await exec("gp url 1337")).stdout.trim();
 
     // Make sure we can open new tabs
     const tested = new Promise(r => { resolve = r });
-    await exec(`gp preview ${url}/test --external`);
-    console.log(`Please "Allow pop-ups for ${url.replace("https://1337-", "")}"...`);
+    await exec(`gp preview ${serverUrl}/test --external`);
+    console.log(`Please "Allow pop-ups for ${serverUrl.replace("https://1337-", "")}"...`);
     await tested;
     console.log("Done\n");
 
-    console.log(`Please run this locally:
-    git clone https://github.com/spring-projects/spring-petclinic &&
-    cd spring-petclinic &&
-    curl -k ${url}/start?id=abc &&
-    ./mvnw package -DskipTests &&
-    curl -k ${url}/stop?id=abc &&
-    cd .. &&
-    rm -rf spring-petclinic`);
+    await localBuild(randomHex(4), "https://github.com/jankeromnes/gitpod-benchmark-spring-petclinic", serverUrl);
+    await gitpodBuild(randomHex(4), "https://github.com/jankeromnes/gitpod-benchmark-spring-petclinic", serverUrl);
 });
