@@ -1,3 +1,6 @@
+tasks:
+  - command: node server.js
+
 ports:
   - port: 1337
     onOpen: ignore
