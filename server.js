@@ -11,14 +11,7 @@ let serverUrl;
 
 const randomHex = (size) => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
-const workspaceBuild = async (repoUrl) => {
-    const id = "workspace-" + randomHex(6);
-    builds[id] = { repoUrl, dataset: "workspace" };
-    await exec(`gp preview https://gitpod.io/#BUILD_ID=${id},SERVER_URL=${encodeURIComponent(serverUrl)}/${repoUrl} --external`);
-    builds[id].init = Date.now();
-};
-
-const laptopBuild = async (repoUrl) => {
+const buildLaptop = async (repoUrl) => {
     const id = "laptop-" + randomHex(6);
     builds[id] = { repoUrl, dataset: "laptop" };
     console.log(`Please run this locally:
@@ -28,6 +21,27 @@ const laptopBuild = async (repoUrl) => {
     BUILD_ID=${id} SERVER_URL=${serverUrl} ./gitpod-benchmark.sh &&
     cd - &&
     rm -rf /tmp/${id}`);
+}
+
+const buildWorkspace = async (repoUrl) => {
+    const id = "workspace-" + randomHex(6);
+    builds[id] = { repoUrl, dataset: "workspace" };
+    await exec(`gp preview https://gitpod.io/#BUILD_ID=${id},SERVER_URL=${encodeURIComponent(serverUrl)}/${repoUrl} --external`);
+    builds[id].init = Date.now();
+};
+
+const buildPrebuild = async (repoUrl) => {
+    const id = "prebuild-" + randomHex(6);
+    builds[id] = { repoUrl, dataset: "prebuild" };
+    await exec(`git clone ${repoUrl} /tmp/${id} &&
+    cd /tmp/${id} &&
+    git checkout -b prebuild &&
+    printf "tasks:\n  - prebuild: BUILD_ID=${id} SERVER_URL=${serverUrl} ./gitpod-benchmark.sh\n" > .gitpod.yml &&
+    git commit -am "Run ${id}" &&
+    git push -f origin prebuild &&
+    cd - &&
+    rm -rf /tmp/${id}`);
+    builds[id].init = Date.now();
 }
 
 const saveBuild = async (build) => {
@@ -74,7 +88,7 @@ http.Server(async (req, res) => {
         delete builds[params.id];
         if (Object.keys(builds).length === 0) {
             // This was the last build, save DB to disk
-            fs.writeFileSync("./db.json", "utf-8", JSON.stringify(db, null, 4));
+            fs.writeFileSync("./db.json", JSON.stringify(db, null, 4), "utf-8");
             console.log("All done!");
         }
         res.writeHead(200);
@@ -96,7 +110,8 @@ http.Server(async (req, res) => {
     console.log("Done\n");
 
     for (const repoUrl in db.repositories) {
-        await laptopBuild(repoUrl);
-        await workspaceBuild(repoUrl);
+        await buildLaptop(repoUrl);
+        await buildWorkspace(repoUrl);
+        await buildPrebuild(repoUrl);
     }
 });
