@@ -1,79 +1,61 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>Gitpod vs laptop</title>
-<canvas id="chart" width="400" height="400"></canvas>
-<pre id="data"></pre>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.0/chartjs-adapter-moment.min.js"></script>
-<script>
-    const ctx = document.getElementById('chart').getContext('2d');
-    const myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            datasets: [{
-                label: 'laptop',
-                data: [{
-                    x: '2021-11-06 23:39:30',
-                    y: 70
-                }, {
-                    x: '2021-11-07 01:00:28',
-                    y: 60
-                }, {
-                    x: '2021-11-07 09:00:28',
-                    y: 40
-                }]
-            }, {
-                label: 'prebuild',
-                borderColor: "#ffb45b",
-                data: [{
-                    x: '2021-11-06 23:39:30',
-                    y: 110
-                }, {
-                    x: '2021-11-07 01:00:28',
-                    y: 80
-                }, {
-                    x: '2021-11-07 09:00:28',
-                    y: 35
-                }]
-            }, {
-                label: 'workspace',
-                borderColor: "#ff8a00",
-                data: [{
-                    x: '2021-11-06 23:39:30',
-                    y: 100
-                }, {
-                    x: '2021-11-07 01:00:28',
-                    y: 70
-                }, {
-                    x: '2021-11-07 09:00:28',
-                    y: 30
-                }]
-            }],
-        },
-        options: {
-            scales: {
-                x: {
-                    type: 'time',
+<body>
+    <canvas id="chart" width="400" height="400"></canvas>
+    <pre id="data"></pre>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.0/chartjs-adapter-moment.min.js"></script>
+    <script>
+        const plot = (data) => {
+            const canvas = document.createElement("canvas");
+            document.body.appendChild(canvas);
+            const ctx = canvas.getContext("2d");
+            const chart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    datasets: [{
+                        label: "laptop",
+                        data: data.datasets.laptop,
+                    }, {
+                        label: "workspace",
+                        borderColor: "#ff8a00",
+                        data: data.datasets.workspace,
+                    }, {
+                        label: "prebuild",
+                        borderColor: "#ffb45b",
+                        data: data.datasets.prebuild,
+                    }],
                 },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'seconds',
+                options: {
+                    scales: {
+                        x: {
+                            type: "time",
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: "seconds",
+                            },
+                        },
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: data.title,
+                        },
                     },
                 },
-            },
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Build: nushell (Rust)',
-                },
-            },
-        }
-    });
+            });
+        };
 
-    fetch("./db.json").then(res => res.json()).then(data => {
-        document.querySelector("#data").textContent = JSON.stringify(data, null, 4);
-    });
-</script>
+        fetch("./db.json").then(res => res.json()).then(db => {
+            document.querySelector("#data").textContent = JSON.stringify(db, null, 4);
+            for (const repo in db) {
+                plot(db[repo]);
+            }
+        });
+    </script>
+</body>

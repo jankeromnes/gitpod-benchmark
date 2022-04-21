@@ -1,1 +1,10 @@
-{}
+{
+    "repositories": {
+        "https://github.com/jankeromnes/gitpod-benchmark-nushell": {
+            "title": "nushell (Rust)"
+        },
+        "https://github.com/jankeromnes/gitpod-benchmark-spring-petclinic": {
+            "title": "spring-petclinic (Java)"
+        }
+    }
+}

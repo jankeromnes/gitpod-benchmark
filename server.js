@@ -1,5 +1,6 @@
 const fs = require("fs");
 const http = require("http");
+const { builtinModules } = require("module");
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 
@@ -9,25 +10,36 @@ let resolve;
 let serverUrl;
 
 const randomHex = (size) => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-const newBuild = (repoUrl) => {
-    const id = randomHex(8);
-    builds[id] = { id, repository: repoUrl };
-    return builds[id];
-}
-const gitpodBuild = async (repoUrl) => {
-    const build = newBuild(repoUrl);
-    await exec(`gp preview https://gitpod.io/#BUILD_ID=${build.id},SERVER_URL=${encodeURIComponent(serverUrl)}/${repoUrl} --external`);
-    build.init = Date.now();
+
+const workspaceBuild = async (repoUrl) => {
+    const id = "workspace-" + randomHex(6);
+    builds[id] = { repoUrl, dataset: "workspace" };
+    await exec(`gp preview https://gitpod.io/#BUILD_ID=${id},SERVER_URL=${encodeURIComponent(serverUrl)}/${repoUrl} --external`);
+    builds[id].init = Date.now();
 };
-const localBuild = async (repoUrl) => {
-    const build = newBuild(repoUrl);
+
+const laptopBuild = async (repoUrl) => {
+    const id = "laptop-" + randomHex(6);
+    builds[id] = { repoUrl, dataset: "laptop" };
     console.log(`Please run this locally:
-    curl -k ${serverUrl}/init?id=${build.id} &&
-    git clone ${repoUrl} /tmp/${build.id} &&
-    cd /tmp/${build.id} &&
-    BUILD_ID=${build.id} SERVER_URL=${serverUrl} ./gitpod-benchmark.sh &&
+    curl -k ${serverUrl}/init?id=${id} &&
+    git clone ${repoUrl} /tmp/${id} &&
+    cd /tmp/${id} &&
+    BUILD_ID=${id} SERVER_URL=${serverUrl} ./gitpod-benchmark.sh &&
     cd - &&
-    rm -rf /tmp/${build.id}`);
+    rm -rf /tmp/${id}`);
+}
+
+const saveBuild = async (build) => {
+    const repo = db.repositories[build.repoUrl];
+    if (!repo.datasets) {
+        repo.datasets = { laptop: [], workspace: [], prebuild: [] };
+    }
+    repo.datasets[build.dataset].push({
+        x: build.init,
+        start: build.start - build.init,
+        build: build.stop - build.start,
+    });
 }
 
 http.Server(async (req, res) => {
@@ -58,7 +70,13 @@ http.Server(async (req, res) => {
     if (path === "/stop" && params.id && builds[params.id] && !builds[params.id].stop) {
         builds[params.id].stop = Date.now();
         console.log(params.id, "took", builds[params.id].stop - builds[params.id].start);
+        saveBuild(builds[params.id]);
         delete builds[params.id];
+        if (Object.keys(builds).length === 0) {
+            // This was the last build, save DB to disk
+            fs.writeFileSync("./db.json", "utf-8", JSON.stringify(db, null, 4));
+            console.log("All done!");
+        }
         res.writeHead(200);
         res.end("Build Stopped\n");
         return;
@@ -77,8 +95,8 @@ http.Server(async (req, res) => {
     await tested;
     console.log("Done\n");
 
-    await localBuild("https://github.com/jankeromnes/gitpod-benchmark-spring-petclinic");
-    await gitpodBuild("https://github.com/jankeromnes/gitpod-benchmark-spring-petclinic");
-    await localBuild("https://github.com/jankeromnes/gitpod-benchmark-nushell");
-    await gitpodBuild("https://github.com/jankeromnes/gitpod-benchmark-nushell");
+    for (const repoUrl in db.repositories) {
+        await laptopBuild(repoUrl);
+        await workspaceBuild(repoUrl);
+    }
 });
