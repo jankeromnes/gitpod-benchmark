@@ -13,20 +13,32 @@
         data: {
             datasets: [{
                 label: 'laptop',
-                borderColor: "#8e5ea2",
                 data: [{
                     x: '2021-11-06 23:39:30',
-                    y: 50
+                    y: 70
                 }, {
                     x: '2021-11-07 01:00:28',
                     y: 60
                 }, {
                     x: '2021-11-07 09:00:28',
-                    y: 20
+                    y: 40
                 }]
             }, {
-                label: 'gitpod',
-                borderColor: "#3e95cd",
+                label: 'prebuild',
+                borderColor: "#ffb45b",
+                data: [{
+                    x: '2021-11-06 23:39:30',
+                    y: 110
+                }, {
+                    x: '2021-11-07 01:00:28',
+                    y: 80
+                }, {
+                    x: '2021-11-07 09:00:28',
+                    y: 35
+                }]
+            }, {
+                label: 'workspace',
+                borderColor: "#ff8a00",
                 data: [{
                     x: '2021-11-06 23:39:30',
                     y: 100
@@ -35,7 +47,7 @@
                     y: 70
                 }, {
                     x: '2021-11-07 09:00:28',
-                    y: 10
+                    y: 30
                 }]
             }],
         },
@@ -43,7 +55,10 @@
             scales: {
                 x: {
                     type: 'time',
-                }
+                },
+                y: {
+                    beginAtZero: true,
+                },
             }
         }
     });
