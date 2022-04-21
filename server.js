@@ -36,7 +36,7 @@ const buildPrebuild = async (repoUrl) => {
     await exec(`git clone ${repoUrl} /tmp/${id} &&
     cd /tmp/${id} &&
     git checkout -b prebuild &&
-    printf "tasks:\n  - prebuild: BUILD_ID=${id} SERVER_URL=${serverUrl} ./gitpod-benchmark.sh\n" > .gitpod.yml &&
+    printf "tasks:\n  - prebuild: BUILD_ID=${id} SERVER_URL=${serverUrl} ./gitpod-benchmark.sh\ngithub:\n  prebuilds:\n    branches: true\n" > .gitpod.yml &&
     git commit -am "Run ${id}" &&
     git push -f origin prebuild &&
     cd - &&
