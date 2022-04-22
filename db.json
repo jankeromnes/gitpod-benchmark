@@ -3,18 +3,6 @@
         "https://github.com/jankeromnes/gitpod-benchmark-nushell": {
             "title": "nushell (Rust)",
             "datasets": {
-                "laptop": [
-                    {
-                        "x": 1650571357466,
-                        "start": 2146,
-                        "build": 191175
-                    },
-                    {
-                        "x": 1650610218332,
-                        "start": 2039,
-                        "build": 194873
-                    }
-                ],
                 "workspace": [
                     {
                         "x": 1650571329456,
@@ -38,24 +26,24 @@
                         "start": 11840,
                         "build": 244733
                     }
+                ],
+                "laptop": [
+                    {
+                        "x": 1650571357466,
+                        "start": 2146,
+                        "build": 191175
+                    },
+                    {
+                        "x": 1650610218332,
+                        "start": 2039,
+                        "build": 194873
+                    }
                 ]
             }
         },
         "https://github.com/jankeromnes/gitpod-benchmark-spring-petclinic": {
             "title": "spring-petclinic (Java)",
             "datasets": {
-                "laptop": [
-                    {
-                        "x": 1650571561855,
-                        "start": 1464,
-                        "build": 214638
-                    },
-                    {
-                        "x": 1650611003236,
-                        "start": 1129,
-                        "build": 213211
-                    }
-                ],
                 "workspace": [
                     {
                         "x": 1650571343105,
@@ -78,6 +66,18 @@
                         "x": 1650610214018,
                         "start": 35710,
                         "build": 157129
+                    }
+                ],
+                "laptop": [
+                    {
+                        "x": 1650571561855,
+                        "start": 1464,
+                        "build": 214638
+                    },
+                    {
+                        "x": 1650611003236,
+                        "start": 1129,
+                        "build": 213211
                     }
                 ]
             }

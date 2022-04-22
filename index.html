@@ -36,9 +36,6 @@
                 type: "line",
                 data: {
                     datasets: [{
-                        label: "laptop",
-                        data: data.datasets.laptop.map(toSeconds),
-                    }, {
                         label: "workspace",
                         borderColor: "#ff8a00",
                         data: data.datasets.workspace.map(toSeconds),
@@ -46,6 +43,9 @@
                         label: "prebuild",
                         borderColor: "#ffb45b",
                         data: data.datasets.prebuild.map(toSeconds),
+                    }, {
+                        label: "laptop",
+                        data: data.datasets.laptop.map(toSeconds),
                     }],
                 },
                 options: {

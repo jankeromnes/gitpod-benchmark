@@ -1,6 +1,5 @@
 const fs = require("fs");
 const http = require("http");
-const { builtinModules } = require("module");
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 
@@ -10,18 +9,6 @@ let resolve;
 let serverUrl;
 
 const randomHex = (size) => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-
-const buildLaptop = async (repoUrl) => {
-    const id = "laptop-" + randomHex(6);
-    builds[id] = { repoUrl, dataset: "laptop" };
-    console.log(`Please run this locally:
-    curl -k ${serverUrl}/init?id=${id} &&
-    git clone ${repoUrl} /tmp/${id} &&
-    cd /tmp/${id} &&
-    BUILD_ID=${id} SERVER_URL=${serverUrl} ./gitpod-benchmark.sh &&
-    cd - &&
-    rm -rf /tmp/${id}`);
-}
 
 const buildWorkspace = async (repoUrl) => {
     const id = "workspace-" + randomHex(6);
@@ -44,10 +31,22 @@ const buildPrebuild = async (repoUrl) => {
     builds[id].init = Date.now();
 }
 
+const buildLaptop = async (repoUrl) => {
+    const id = "laptop-" + randomHex(6);
+    builds[id] = { repoUrl, dataset: "laptop" };
+    console.log(`Please run this locally:
+    curl -k ${serverUrl}/init?id=${id} &&
+    git clone ${repoUrl} /tmp/${id} &&
+    cd /tmp/${id} &&
+    BUILD_ID=${id} SERVER_URL=${serverUrl} ./gitpod-benchmark.sh &&
+    cd - &&
+    rm -rf /tmp/${id}`);
+}
+
 const saveBuild = async (build) => {
     const repo = db.repositories[build.repoUrl];
     if (!repo.datasets) {
-        repo.datasets = { laptop: [], workspace: [], prebuild: [] };
+        repo.datasets = { workspace: [], prebuild: [], laptop: [] };
     }
     repo.datasets[build.dataset].push({
         x: build.init,
@@ -110,8 +109,8 @@ http.Server(async (req, res) => {
     console.log("Done\n");
 
     for (const repoUrl in db.repositories) {
-        await buildLaptop(repoUrl);
         await buildWorkspace(repoUrl);
         await buildPrebuild(repoUrl);
+        await buildLaptop(repoUrl);
     }
 });
