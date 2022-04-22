@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>Gitpod vs laptop</title>
+<title>Gitpod vs local</title>
 <style>
     .charts {
         display: flex;
@@ -43,8 +43,8 @@
                         borderColor: "#ffb45b",
                         data: data.datasets.prebuild.map(toSeconds),
                     }, {
-                        label: "laptop",
-                        data: data.datasets.laptop.map(toSeconds),
+                        label: "local",
+                        data: data.datasets.local.map(toSeconds),
                     }],
                 },
                 options: {

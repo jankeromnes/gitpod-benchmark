@@ -31,9 +31,9 @@ const buildPrebuild = async (repoUrl) => {
     builds[id].init = Date.now();
 }
 
-const buildLaptop = async (repoUrl) => {
-    const id = "laptop-" + randomHex(6);
-    builds[id] = { repoUrl, dataset: "laptop" };
+const buildLocal = async (repoUrl) => {
+    const id = "local-" + randomHex(6);
+    builds[id] = { repoUrl, dataset: "local" };
     console.log(`Please run this locally:
     curl -k ${serverUrl}/init?id=${id} &&
     git clone ${repoUrl} /tmp/${id} &&
@@ -46,7 +46,7 @@ const buildLaptop = async (repoUrl) => {
 const saveBuild = async (build) => {
     const repo = db.repositories[build.repoUrl];
     if (!repo.datasets) {
-        repo.datasets = { workspace: [], prebuild: [], laptop: [] };
+        repo.datasets = { workspace: [], prebuild: [], local: [] };
     }
     repo.datasets[build.dataset].push({
         x: build.init,
@@ -111,6 +111,6 @@ http.Server(async (req, res) => {
     for (const repoUrl in db.repositories) {
         await buildWorkspace(repoUrl);
         await buildPrebuild(repoUrl);
-        await buildLaptop(repoUrl);
+        await buildLocal(repoUrl);
     }
 });
