@@ -15,7 +15,6 @@
 <body>
     <div id="starts" class="charts"></div>
     <div id="builds" class="charts"></div>
-    <pre id="data"></pre>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.0/chartjs-adapter-moment.min.js"></script>
@@ -75,7 +74,6 @@
         };
 
         fetch("./db.json").then(res => res.json()).then(db => {
-            document.querySelector("#data").textContent = JSON.stringify(db, null, 4);
             for (const repo in db.repositories) {
                 plot(db.repositories[repo]);
             }
