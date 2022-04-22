@@ -29,6 +29,15 @@
                     }],
                 },
                 options: {
+                    parsing: {
+                        yAxisKey: "build",
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: data.title,
+                        },
+                    },
                     scales: {
                         x: {
                             type: "time",
@@ -41,20 +50,14 @@
                             },
                         },
                     },
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: data.title,
-                        },
-                    },
                 },
             });
         };
 
         fetch("./db.json").then(res => res.json()).then(db => {
             document.querySelector("#data").textContent = JSON.stringify(db, null, 4);
-            for (const repo in db) {
-                plot(db[repo]);
+            for (const repo in db.repositories) {
+                plot(db.repositories[repo]);
             }
         });
     </script>
