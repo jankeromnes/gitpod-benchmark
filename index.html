@@ -1,31 +1,51 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>Gitpod vs laptop</title>
+<style>
+    .charts {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .charts > div {
+        width: 600px;
+        margin: 30px;
+    }
+</style>
 <body>
-    <canvas id="chart" width="400" height="400"></canvas>
+    <div id="starts" class="charts"></div>
+    <div id="builds" class="charts"></div>
     <pre id="data"></pre>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.0/chartjs-adapter-moment.min.js"></script>
     <script>
+        const toSeconds = (d) => {
+            d.start = Math.round(10 * d.start / 1000) / 10;
+            d.build = Math.round(10 * d.build / 1000) / 10;
+            return d;
+        };
+
         const plot = (data) => {
+            const div = document.createElement("div");
             const canvas = document.createElement("canvas");
-            document.body.appendChild(canvas);
+            div.appendChild(canvas);
+            document.querySelector("#builds").appendChild(div);
             const ctx = canvas.getContext("2d");
             const chart = new Chart(ctx, {
                 type: "line",
                 data: {
                     datasets: [{
                         label: "laptop",
-                        data: data.datasets.laptop,
+                        data: data.datasets.laptop.map(toSeconds),
                     }, {
                         label: "workspace",
                         borderColor: "#ff8a00",
-                        data: data.datasets.workspace,
+                        data: data.datasets.workspace.map(toSeconds),
                     }, {
                         label: "prebuild",
                         borderColor: "#ffb45b",
-                        data: data.datasets.prebuild,
+                        data: data.datasets.prebuild.map(toSeconds),
                     }],
                 },
                 options: {
@@ -35,7 +55,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: data.title,
+                            text: "Build: " + data.title,
                         },
                     },
                     scales: {
