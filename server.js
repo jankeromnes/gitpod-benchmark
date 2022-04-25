@@ -10,6 +10,15 @@ let serverUrl;
 
 const randomHex = (size) => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
+const rebaseUpstream = async (repoUrl) => {
+    const id = "rebase-" + randomHex(6);
+    await exec(`git clone ${repoUrl} /tmp/${id} &&
+    cd /tmp/${id} &&
+    ./rebase-upstream.sh &&
+    cd - &&
+    rm -rf /tmp/${id}`);
+}
+
 const buildWorkspace = async (repoUrl) => {
     const id = "workspace-" + randomHex(6);
     builds[id] = { repoUrl, dataset: "workspace" };
@@ -109,6 +118,7 @@ http.Server(async (req, res) => {
     console.log("Done\n");
 
     for (const repoUrl in db.repositories) {
+        await rebaseUpstream(repoUrl);
         await buildWorkspace(repoUrl);
         await buildPrebuild(repoUrl);
         await buildLocal(repoUrl);
