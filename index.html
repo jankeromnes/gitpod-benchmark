@@ -19,17 +19,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.0/chartjs-adapter-moment.min.js"></script>
     <script>
-        const toSeconds = (d) => {
-            d.start = Math.round(10 * d.start / 1000) / 10;
-            d.build = Math.round(10 * d.build / 1000) / 10;
-            return d;
+        const toMinutes = (d) => {
+            return {
+                x: d.x,
+                start: Math.round(100 * d.start / (1000 * 60)) / 100,
+                build: Math.round(100 * d.build / (1000 * 60)) / 100,
+            };
         };
 
-        const plot = (data) => {
+        const plot = (data, series) => {
             const div = document.createElement("div");
             const canvas = document.createElement("canvas");
             div.appendChild(canvas);
-            document.querySelector("#builds").appendChild(div);
             const ctx = canvas.getContext("2d");
             const chart = new Chart(ctx, {
                 type: "line",
@@ -37,24 +38,24 @@
                     datasets: [{
                         label: "workspace",
                         borderColor: "#ff8a00",
-                        data: data.datasets.workspace.map(toSeconds),
+                        data: data.datasets.workspace.map(toMinutes),
                     }, {
                         label: "prebuild",
                         borderColor: "#ffb45b",
-                        data: data.datasets.prebuild.map(toSeconds),
+                        data: data.datasets.prebuild.map(toMinutes),
                     }, {
                         label: "local",
-                        data: data.datasets.local.map(toSeconds),
+                        data: data.datasets.local.map(toMinutes),
                     }],
                 },
                 options: {
                     parsing: {
-                        yAxisKey: "build",
+                        yAxisKey: series,
                     },
                     plugins: {
                         title: {
                             display: true,
-                            text: "Build: " + data.title,
+                            text: series.slice(0, 1).toUpperCase() + series.slice(1) + ": " + data.title,
                         },
                     },
                     scales: {
@@ -65,17 +66,19 @@
                             beginAtZero: true,
                             title: {
                                 display: true,
-                                text: "seconds",
+                                text: "minutes",
                             },
                         },
                     },
                 },
             });
+            return div;
         };
 
         fetch("./db.json").then(res => res.json()).then(db => {
             for (const repo in db.repositories) {
-                plot(db.repositories[repo]);
+                // document.querySelector("#starts").appendChild(plot(db.repositories[repo], "start"));
+                document.querySelector("#builds").appendChild(plot(db.repositories[repo], "build"));
             }
         });
     </script>
