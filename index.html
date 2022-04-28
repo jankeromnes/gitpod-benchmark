@@ -27,6 +27,11 @@
             };
         };
 
+        const seriesTitle = {
+            start: "Start-up time",
+            build: "Build time",
+        };
+
         const plot = (data, series) => {
             const div = document.createElement("div");
             const canvas = document.createElement("canvas");
@@ -55,7 +60,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: series.slice(0, 1).toUpperCase() + series.slice(1) + ": " + data.title,
+                            text: seriesTitle[series] + ": " + data.title,
                         },
                     },
                     scales: {
@@ -77,7 +82,7 @@
 
         fetch("./db.json").then(res => res.json()).then(db => {
             for (const repo in db.repositories) {
-                // document.querySelector("#starts").appendChild(plot(db.repositories[repo], "start"));
+                document.querySelector("#starts").appendChild(plot(db.repositories[repo], "start"));
                 document.querySelector("#builds").appendChild(plot(db.repositories[repo], "build"));
             }
         });
