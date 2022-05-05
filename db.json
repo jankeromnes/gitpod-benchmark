@@ -321,6 +321,9 @@
                     }
                 ]
             }
+        },
+        "https://github.com/jankeromnes/gitpod-benchmark-node": {
+            "title": "nodejs (C++)"
         }
     }
 }
