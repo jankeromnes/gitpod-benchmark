@@ -44,7 +44,7 @@ const buildLocal = async (repoUrl) => {
     const id = "local-" + randomHex(6);
     builds[id] = { repoUrl, dataset: "local" };
     console.log(`Please run this locally:
-    curl -k ${serverUrl}/init?id=${id} &&
+    curl -k "${serverUrl}/init?id=${id}" &&
     git clone ${repoUrl} /tmp/${id} &&
     cd /tmp/${id} &&
     BUILD_ID=${id} SERVER_URL=${serverUrl} ./gitpod-benchmark.sh &&
