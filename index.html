@@ -57,12 +57,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-moment/1.0.0/chartjs-adapter-moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.4.0/chartjs-plugin-annotation.min.js"></script>
     <script>
         const toMinutes = (d) => {
             return {
                 x: d.x,
                 start: Math.round(100 * d.start / (1000 * 60)) / 100,
                 build: Math.round(100 * d.build / (1000 * 60)) / 100,
+            };
+        };
+
+        const toAnnotation = (series, d) => {
+            return {
+                type: 'label',
+                xValue: d.x,
+                yValue: toMinutes(d)[series],
+                xAdjust: 0,
+                yAdjust: -50,
+                backgroundColor: 'rgba(245,245,245,0.6)',
+                content: [ d.annotation ],
+                textAlign: 'start',
+                font: {
+                    size: 11
+                },
+                callout: {
+                    enabled: true,
+                    side: 10
+                }
             };
         };
 
@@ -97,6 +118,13 @@
                         yAxisKey: series,
                     },
                     plugins: {
+                        annotation: {
+                            annotations: {
+                                ...data.datasets.workspace.filter(d => !!d.annotation).map(toAnnotation.bind(null, series)),
+                                ...data.datasets.prebuild.filter(d => !!d.annotation).map(toAnnotation.bind(null, series)),
+                                ...data.datasets.local.filter(d => !!d.annotation).map(toAnnotation.bind(null, series)),
+                            },
+                        },
                         title: {
                             display: true,
                             text: seriesTitle[series] + ": " + data.title,
