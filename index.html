@@ -120,9 +120,7 @@
                     plugins: {
                         annotation: {
                             annotations: {
-                                ...data.datasets.workspace.filter(d => !!d.annotation).map(toAnnotation.bind(null, series)),
-                                ...data.datasets.prebuild.filter(d => !!d.annotation).map(toAnnotation.bind(null, series)),
-                                ...data.datasets.local.filter(d => !!d.annotation).map(toAnnotation.bind(null, series)),
+                                ...[...data.datasets.workspace, ...data.datasets.prebuild, ...data.datasets.local].filter(d => !!d.annotation).map(toAnnotation.bind(null, series)),
                             },
                         },
                         title: {
