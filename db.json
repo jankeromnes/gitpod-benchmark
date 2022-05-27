@@ -7,8 +7,7 @@
                     {
                         "x": 1650571343105,
                         "start": 6009,
-                        "build": 214623,
-                        "annotation": "XL→"
+                        "build": 214623
                     },
                     {
                         "x": 1650610211808,
@@ -94,27 +93,31 @@
                         "x": 1652951130047,
                         "start": 7066,
                         "build": 203598,
-                        "annotation": "Not XL→"
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653029058672,
                         "start": 11096,
-                        "build": 200663
+                        "build": 200663,
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653286898552,
                         "start": 99524,
-                        "build": 213001
+                        "build": 213001,
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653375054430,
                         "start": 8475,
-                        "build": 243788
+                        "build": 243788,
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653460122829,
                         "start": 10941,
-                        "build": 213436
+                        "build": 213436,
+                        "annotation": "Not XL"
                     }
                 ],
                 "prebuild": [
@@ -350,8 +353,7 @@
                     {
                         "x": 1650571329456,
                         "start": 15225,
-                        "build": 259720,
-                        "annotation": "XL→"
+                        "build": 259720
                     },
                     {
                         "x": 1650610208573,
@@ -437,27 +439,31 @@
                         "x": 1652951137347,
                         "start": 13141,
                         "build": 262868,
-                        "annotation": "Not XL→"
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653029077891,
                         "start": 13727,
-                        "build": 507832
+                        "build": 507832,
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653286905669,
                         "start": 92448,
-                        "build": 342176
+                        "build": 342176,
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653375065024,
                         "start": 11276,
-                        "build": 616431
+                        "build": 616431,
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653460650034,
                         "start": 10724,
-                        "build": 460528
+                        "build": 460528,
+                        "annotation": "Not XL"
                     }
                 ],
                 "prebuild": [
@@ -693,8 +699,7 @@
                     {
                         "x": 1651913365121,
                         "start": 281104,
-                        "build": 2184205,
-                        "annotation": "XL→"
+                        "build": 2184205
                     },
                     {
                         "x": 1652084223697,
@@ -725,27 +730,31 @@
                         "x": 1652951196477,
                         "start": 70960,
                         "build": 3902309,
-                        "annotation": "Not XL→"
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653029271958,
                         "start": 38856,
-                        "build": 4949095
+                        "build": 4949095,
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653286957401,
                         "start": 28134,
-                        "build": 4277541
+                        "build": 4277541,
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653375166423,
                         "start": 28196,
-                        "build": 2393367
+                        "build": 2393367,
+                        "annotation": "Not XL"
                     },
                     {
                         "x": 1653460896789,
                         "start": 203972,
-                        "build": 3748365
+                        "build": 3748365,
+                        "annotation": "Not XL"
                     }
                 ],
                 "prebuild": [
